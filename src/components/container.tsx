@@ -8,6 +8,7 @@ type ContainerProps = {
   example2?: string;
   possibleDivides: (n: number) => number;
   maxPaintedSquares: (n: number, colors: number[]) => number;
+  spiralMatrix: (n: number, x: number, y: number) => number;
   number: number;
 };
 
@@ -17,24 +18,30 @@ export const Container = ({
   example1,
   example2,
   number,
+  spiralMatrix,
   possibleDivides,
   maxPaintedSquares,
 }: ContainerProps) => {
   const [length, setLength] = useState(0);
   const [total, setTotal] = useState(0);
   const [input2Value, setInput2Value] = useState("");
+  const [x, setX] = useState(0);
+  const [y, setY] = useState(0);
 
   const handleProcess = () => {
     if (number === 1) {
       const result = possibleDivides(length);
       setTotal(result);
-    } else {
+    } else if (number === 2) {
       const parsedColors = (input2Value || "")
         .split(" ")
         .map((part) => parseFloat(part))
         .filter((num) => !isNaN(num));
 
       const result = maxPaintedSquares(length, parsedColors);
+      setTotal(result);
+    } else if (number === 3) {
+      const result = spiralMatrix(length, x, y);
       setTotal(result);
     }
   };
@@ -43,10 +50,17 @@ export const Container = ({
     setLength(value);
   };
 
-
   const handleInput2Change = (value: string) => {
     console.log("Here", typeof value);
     setInput2Value(value);
+  };
+
+  const handleXChange = (value: number) => {
+    setX(value);
+  };
+
+  const handleYChange = (value: number) => {
+    setY(value);
   };
 
   return (
@@ -65,7 +79,7 @@ export const Container = ({
                 placeholder="Савааны урт"
                 onChange={(value) => handleInputChange(value)}
               />
-            ) : (
+            ) : number === 2 ? (
               <div className="flex flex-col gap-2">
                 <Input
                   placeholder="Нийт савнуудын тоо"
@@ -73,11 +87,26 @@ export const Container = ({
                 />
                 <input
                   className="p-2 outline-none border border-blue-400 rounded-lg"
-                  placeholder='Тус бүрийн литр'
-                  onChange= {(e)=> handleInput2Change(e.target.value)}
+                  placeholder="Тус бүрийн литр"
+                  onChange={(e) => handleInput2Change(e.target.value)}
                 />
               </div>
-            )}
+            ) : number === 3 ? (
+              <div className="flex flex-col gap-2">
+                <Input
+                  placeholder="Матриксийн утга"
+                  onChange={(value) => handleInputChange(value)}
+                />
+                <Input
+                  placeholder="X coordinate"
+                  onChange={(value) => handleXChange(value)}
+                />
+                <Input
+                  placeholder="Y coordinate"
+                  onChange={(value) => handleYChange(value)}
+                />
+              </div>
+            ) : null}
           </div>
         </div>
         <div className="w-1/2 gap-6 flex items-center justify-between">
